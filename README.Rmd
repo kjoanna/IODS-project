@@ -1,9 +1,8 @@
 ---
 title: Hello world!
-author: It's Kaisla
-output: 
-  html_document
+author: It's Kaisla.
+output: github_document
 ---
 
-https://kjoanna.github.io/IODS-project/
+[Here](https://kjoanna.github.io/IODS-project/)'s what's up.
 
