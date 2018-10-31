@@ -1,7 +1,8 @@
 ---
 title: Hello world!
 author: It's Kaisla
-output: html_document
+output: 
+  html_document
 ---
 
 https://kjoanna.github.io/IODS-project/
