@@ -6,7 +6,9 @@ output: html_document
 
 ## IODS-project
 
-It seems I have a massive problem with the pandoc document conversion failure with error 67... 
+It seems my markdown experience is getting complicated with a massive problem with the pandoc document conversion failure with error 67.
+
+
 
 
 
