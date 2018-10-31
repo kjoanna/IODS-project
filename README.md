@@ -1,5 +1,4 @@
-Hello world!
+Yo
 ================
-It's Kaisla.
 
-[Here](https://kjoanna.github.io/IODS-project/)'s what's up.
+Hello world! [Here](https://kjoanna.github.io/IODS-project/)'s what's up.
