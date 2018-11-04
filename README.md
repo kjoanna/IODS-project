@@ -1,6 +1,6 @@
-Yo
+Hello world!
 ================
 
-Hello world! Here's what's up
+Here's what's up
 
 <https://kjoanna.github.io/IODS-project/>

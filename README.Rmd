@@ -1,8 +1,8 @@
 ---
-title: Yo
+title: "Hello world!"
 output: github_document
 ---
-Hello world! 
+
 Here's what's up
 
 https://kjoanna.github.io/IODS-project/ 
