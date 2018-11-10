@@ -1,7 +1,7 @@
 
 # About the project
 
-*This is my Introduction to Open Data Science course project.*
+This is my Introduction to Open Data Science course project.
 
 https://github.com/kjoanna/IODS-project 
 

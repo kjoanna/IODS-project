@@ -1,0 +1,108 @@
+---
+title: "Chapter 2"
+author: "Kaisla Komulainen"
+date: "11/9/2018"
+output:
+  html_document
+---
+
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Attitudes towards statistics associated with statistics course perfomance?
+<br>
+
+**Data and analysis**
+
+This analysis evaluates the association of a student's overall attitude towards statistics with their performance on a introductory statistics course among Finnish university students. Data were from the Students 2014 study (N=183). The dataset has been described in detail elsewhere (http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-meta.txt). All analyses were conducted in an imputed dataset with no missing values. We included 166 participants who scored higher than zero on the final exam.
+
+Linear regression analysis was used to evaluate the assocations of attitudes with course perfomance. Course performance, measured as a continuous score obtained on the final exam, was the study outcome, and attitude, measured as the mean of 10 attitudinal items reported on a 5-point Likert scale was the primary exposure. Higher values on the final attitude variable indicated more positive attitudes towards statistics. The associations of attitudes with performance were assessed first without adjustments and then adjusting for age and gender that were considered as potential confounders to the attitude-perfomance association. Linear model assumptions were evaluated graphically, by plotting residuals against the fitted values, creating QQ-plots and examining the leverage of outliers based on Cook's distance.
+
+**Results**
+
+There were 110 (66%) females. The mean age in the sample was 25.5 (SD=7.8). The mean score on the final exam was 22.7 (SD=5.9). On average, participants reported a neutral attitude towards statistics (mean=3.1, SD=0.7).
+
+More positive attitude was positively correlated with exam points (p<0.001). Gender was associated with attitudes, with male participants reporting more positive attitudes (p<0.001). Age was not correlated with attitudes (p>0.05).
+
+In unadjusted linear regression analysis, each one unit increase on the attitudinal scale was associated with 3.5 points higher final exam score (b=3.5, 95% CI, 2.4 to 4.6 p<0.001). This estimate remained similar after adjusting for age and gender (b=3.6, 95% CI, 2.4 to 4.8), p<0.002). Both the unadjusted and adjusted model explained approximately 19% of the variance of course performance (R squared=0.19).
+
+Regression diagnosics analyses showed that the model met the key linear regression assumptions (all plots shown below). Residuals were relatively normally distributed with a mean of zero and a constant variance across the range of fitted values. No notable outliers impacting the model with greater leverage than other observations were observed.
+
+**Conclusion**
+
+These data suggest a more positive attitude towards statistics is associated with better course performance among Finnish university students. The association remained after adjusting for age and gender, suggesting no strong confounding by these demographic factors.
+
+
+<!-- all code and output below --> 
+
+```{r, echo=TRUE}
+
+setwd ("/Users/kjkomula/Documents/GitHub/IODS-project/data")
+
+library(ggplot2)
+library(GGally)
+library(plyr)
+library(dplyr)
+library(knitr)
+library(psych)
+
+
+lrn14 <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep=",", header=TRUE)
+setwd ("/Users/kjkomula/Documents/GitHub/IODS-project/data")
+write.table(lrn14, file = "learning2014s3", sep = "\t")
+
+
+# Students 2014 data
+l14<-read.table("/Users/kjkomula/Documents/GitHub/IODS-project/data/learning2014s3", sep ="\t")
+l14 <- as.data.frame(l14)
+
+# explore the structure and dimensions of Students 2014
+str(l14)
+dim(l14)
+
+myvars <- list(l14$age,l14$attitude,l14$points)
+myvars[1]
+
+lapply(myvars, mean)
+lapply(myvars, sd)
+
+# plotting attitude vs points
+p1 <- ggplot(l14, aes(x = attitude, y = points)) + geom_point(size=2, shape=21, fill="black")+ geom_smooth(method="lm", colour="black", size=0.5)+ ggtitle("Student's attitude versus exam points")+ theme(legend.key = element_rect(fill = "white"),
+  legend.background = element_rect(fill = "white"),
+  legend.position = c(0.14, 0.80),
+  panel.grid.major.x = element_blank() ,
+  panel.grid.major.y = element_line( size=.1, color="black" ),
+  panel.background = element_rect(fill = "white"),
+  axis.line.x = element_line(color="black", size = 0.3),
+  axis.line.y = element_line(color="black", size = 0.3))
+p1
+
+# ggpairs
+ggpairs(l14[-1], lower = list(combo = wrap("facethist", bins = 20)))
+#correlations
+m1 <- corr.test(l14[-1], adjust="none")
+m1$r
+m1$p
+# association of gender with attitudes
+summary(model.conf <- lm(attitude ~ gender, data=l14))
+
+# association of attitude with points 
+# unadjusted
+summary(model.unadj <- lm(points ~ attitude, data=l14))
+# adjusted for age and gender
+summary(model.adj <- lm(points ~ age + gender + attitude, data=l14))
+
+# residual plots for both the unadjusted and adjusted models
+par(mfrow=c(1,3))
+plot(model.unadj, which = c(1:2, 5)) 
+plot(model.adj, which = c(1:2, 5)) 
+
+```
+
+rmarkdown::render("/Users/kjkomula/Documents/GitHub/IODS-project/data/chapter2_analysis9nov20182.Rmd", output_format = "html_document")
+
+
+
+
