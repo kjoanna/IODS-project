@@ -19,7 +19,15 @@ output:
   
 ***
   
-```{r child = "chapter2_rev.Rmd"}
+
+```{r child = "chapter2_revrev.Rmd"}
 ```
 
 ***
+
+```{r child = "chapter3_rev.Rmd"}
+```
+
+***
+
+rmarkdown::render("/Users/kjkomula/Documents/GitHub/IODS-project/index.Rmd", output_format = "html_document")

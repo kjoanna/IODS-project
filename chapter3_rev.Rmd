@@ -1,0 +1,105 @@
+---
+title: "Chapter 3"
+author: "Kaisla Komulainen"
+date: "11/17/2018"
+output: html_document
+---
+
+rmarkdown::render("/Users/kjkomula/Documents/GitHub/IODS-project/chapter3.Rmd", output_format = "html_document")
+```{r, echo=FALSE}
+alc <- read.table("/Users/kjkomula/Documents/GitHub/IODS-project/alc", sep="\t", header=TRUE)
+```
+
+# Going out with friends or being in a relationship - associations with student alcohol use?
+
+This analysis examines whether going out with friends or relationship status are associated with alcohol consumption among Portugese students (n=382). We test the hypothesis that going out more frequently and being single are assocated with high (vs low) alcohol consumption, compared to staying in and being in a relationship.
+
+Alcohol consumption was measured as the self-reported average of weekly alcohol use on a scale ranging from 1 to 5 (higher numbers indicate heavier use). We treated alcohol use as a dichotomous outcome variable (high vs low, >2 vs ≤2). Students also reported the frequency of going out with friends on a 5-point scale and their relationship status (yes/no). We first examined the unadjusted associations of going out and relationship status with alcohol use graphically in boxplots and bar graphs. The associations were then assessed in a mutually adjusted logistic regression analysis, additinally adjusting for sex and age as other potential confounders.
+
+The distributions of the variables included in the analysis are presented in histograms below. Mean age in the sample was 16.6 (SD, 1.2) and most participants were 15 to 19 years old. There were 198 (52%) females. The distribution of alcohol use reported on the 5-point scale was heavily right skewed, with most participants (70%) reporting low alcohol use. There was no difference in the frequency of going out with friends between those in a relationship vs those who were single (p=0.82).
+
+```{r, echo=FALSE, warning=FALSE, fig.height = 5.5, fig.width = 5.5, }
+# histograms of all variables
+newalc <- alc[c("alc_use", "high_use", "sex", "age", "romantic", "goout")]
+gather(newalc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+```
+
+First, the unadjusted associations of going out with friends and relationship status with alcohol use were examined graphically. The plots presented below suggest high alcohol consumption is associated with higher frequency going out with peers. In contrast, no clear pattern of association is observed between alcohol consumption and relationship status.
+
+```{r, echo=FALSE}
+# boxplot going out & alcohol use
+g1 <- ggplot(alc, aes(x = high_use, y = goout))
+g1 + geom_boxplot(width=0.3) + ylab("going out with friends")
+```
+```{r, echo=FALSE}
+# barchart relatonship & alcohol use
+g2 <- ggplot(alc, aes(high_use))
+g2 + facet_wrap("romantic") + geom_bar()
+
+```
+
+In the logistic regression analysis, students who went out with friends more often were indeed more likely to be high alcohol users (adjusted OR=2.1, 95% CI 1.7, 2.7). However, as suggested by the bar chart above, relationship status was not associated with high alcohol use (OR=0.8, 95% CI, 0.5, 1.4, p=0.42). Additionally, we observed that the odds of high alcohol use were 2.4-fold among men compared to women (OR=2.4, 95% CI, 1.5, 3.9), but did not differ according to age.(OR=1.1, 95% CI, 0.9, 1.4, p=0.19)
+
+In terms of predictive power, the model perfomed reasoably well (look below). The model-based predictions of alcohol use (high vs low) were incorrect for approximately 21% of the participants (66 false positives, 15 false negatives). Given the number and nature of the exposures included in the analysis, the predictive power could've been worse. However, our model should not be used for making predictions about alcohol consumption (cross-sectional, small n, limited generalizability, limited scope of exposures).
+<br />
+
+
+**Model predicted vs actual values**
+
+Table           | model says NO  | model says YES
+--------------- | -------------- | --------------
+high use is NO  | 252            | 16
+high use is YES | 66             | 48
+
+
+```{r, echo=TRUE}
+
+#setwd ("/Users/kjkomula/Documents/GitHub/IODS-project/data")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(psych)
+
+alc <- read.table("/Users/kjkomula/Documents/GitHub/IODS-project/alc", sep="\t", header=TRUE)
+
+colnames(alc)
+
+# describing things
+describe(alc$age)
+
+# histograms of all variables
+newalc <- alc[c("alc_use", "high_use", "sex", "age", "romantic", "goout")]
+gather(newalc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+
+# associations of relationship with going out
+alc %>% group_by(romantic) %>% summarise(mean(goout))
+t.test(goout ~romantic, data=alc)
+
+# boxplot going out & alcohol use
+g1 <- ggplot(alc, aes(x = high_use, y = goout))
+g1 + geom_boxplot() + ylab("going out with friends")
+
+# barchart relatonship & alcohol use
+g2 <- ggplot(alc, aes(high_use))
+g2 + facet_wrap("romantic") + geom_bar()
+
+# logistic regression
+m <- glm(high_use ~ sex + age + romantic + goout, data = alc, family = "binomial")
+OR <- coef(m) %>% exp
+CI <- confint(m) %>% exp
+cbind(OR, CI)
+
+## predictive power
+probabilities <- predict(m, type = "response")
+alc <- mutate(alc, probability = probabilities)
+alc <- mutate(alc, prediction = probability > 0.5)
+select(alc, failures, absences, sex, high_use, probability, prediction) %>% tail(10)
+table(high_use = alc$high_use, prediction = alc$prediction)
+
+
+```
+
+
+
+
