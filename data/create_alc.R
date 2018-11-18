@@ -1,7 +1,7 @@
 # Chapter 3
 # Kaisla Komulainen
 # 11/17/2018
-
+ 
 setwd ("/Users/kjkomula/Documents/GitHub/IODS-project/data/")
 
 math <- read.table("/Users/kjkomula/Documents/GitHub/IODS-project/data/student-mat.csv", sep=";", header=TRUE)
